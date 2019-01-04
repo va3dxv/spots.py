@@ -1,10 +1,10 @@
 #!/usr/bin/python
 #
-# dxspots.py
+# vhfspots.py
 #
 # 04/01/2019
 #
-# Copyright 2018 Brian Graves - VA3DXV
+# Copyright 2019 Brian Graves - VA3DXV
 #
 # va3dxv@gmail.com
 #
@@ -23,7 +23,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-# pulls band predictions from hamqsl.com
+# pulls band predictions from dxlite
 #
 # This script requires access to http://api.voicerss.org (it's free)
 # as well as lame and sox to create the .ul file for asterisk
