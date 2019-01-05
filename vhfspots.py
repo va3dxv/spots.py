@@ -37,16 +37,19 @@
 # (where 99999 is your node number)
 #
 #################################
+import datetime
 import shlex
 import subprocess
-from time import strptime, strftime
+
+import pytz
 import requests
 import xmltodict
+
 #
 # configuration
 #
 # set your voicerss API key here
-voicersskey = "yourvoicerssapikeygoeshere"
+voicersskey = "2448a4624db041f3bf4c36e867ceb73e"
 # set your desired voice language here
 voicersslang = "en-us"
 # set speed of speech here
@@ -65,23 +68,24 @@ filemp3 = temppath + scriptname + ".mp3"
 filewav = temppath + scriptname + ".wav"
 fileul = aslfile + ".ul"
 xml_data = requests.get(
-    url="http://dxlite.g7vjr.org/?xml=1&band=vhf&dxcc=001&limit=5")
+    url="http://dxlite.g7vjr.org/?xml=1&band=vhf&dxcc=001&limit=3")
 spots_data = xmltodict.parse(xml_data.text)
 textfile = open(filetxt, "w")
 textfile.write(
-    "Here are the 5 latest DX spots for six meters and up ... times are UTC.\n")
+    "Here are the three most recent DX spots for six meters and up...\n")
 for spots in spots_data["spots"]["spot"]:
-    timestamp = strptime(spots["time"], "%Y-%m-%d %H:%M:%S")
-    textfile.write(spots["spotter"] + " spotted " +
-                   spots["dx"] + " on " + spots["frequency"].split(".")[0] + " on " + format(
-        strftime("%B %d", timestamp)) + " at " + format(strftime("%H%M", timestamp)) + "...\n")
+    date_string = spots["time"]
+    utc = pytz.utc
+    est = pytz.timezone("US/Eastern")
+    utc_datetime = utc.localize(datetime.datetime.strptime(
+        date_string, "%Y-%m-%d %H:%M:%S"))
+    textfile.write(spots["spotter"] + " spotted " + spots["dx"] + " on " + spots["frequency"].split(".")
+                   [0] + " on " + utc_datetime.astimezone(est).strftime("%B %d") + " at " + utc_datetime.astimezone(est).strftime("%I:%M%p") + "...\n")
 textfile.write("End of report.")
 textfile.close()
 dxspots = open(filetxt, "r")
-getmp3 = requests.get("http://api.voicerss.org/",
-                      data={"key": voicersskey, "r": voicerssspeed,
-                            "src": dxspots, "hl": voicersslang, "f": voicerssformat}
-                      )
+getmp3 = requests.get("http://api.voicerss.org/", data={
+                      "key": voicersskey, "r": voicerssspeed, "src": dxspots, "hl": voicersslang, "f": voicerssformat})
 mp3file = open(filemp3, "wb")
 mp3file.write(getmp3.content)
 mp3file.close()
