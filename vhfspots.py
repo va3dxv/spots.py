@@ -49,7 +49,7 @@ import xmltodict
 # configuration
 #
 # set your voicerss API key here
-voicersskey = "2448a4624db041f3bf4c36e867ceb73e"
+voicersskey = "yourvoicerssapikeygoeshere"
 # set your desired voice language here
 voicersslang = "en-us"
 # set speed of speech here
